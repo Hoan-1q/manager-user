@@ -43,7 +43,7 @@ const EditUser: React.FC = () => {
 
   return (
     <Page
-      title={id === 'new' ? 'New upsell' : `Edit `}
+      title={id === 'new' ? 'New user' : `Edit `}
       breadcrumbs={[{content: 'Manager', url: '/Manager'}]}
     >
       <Card>
