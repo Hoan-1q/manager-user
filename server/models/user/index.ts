@@ -3,7 +3,6 @@ import { IUser } from './type';
 
 const userSchema = new Schema(
   {
-    _id: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
     disable: { type: Boolean, default: false },

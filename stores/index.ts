@@ -9,6 +9,9 @@ export const StoreModel = types
     listUser: types.optional(types.array(UserModel), []),
   })
   .actions((self) => ({
+    resetStore() {
+      applySnapshot(self.user, {});
+    },
     onLogin(usename: string, password: string) {
       if (usename && password === 'admin') {
         console.log(usename, password);
@@ -16,7 +19,9 @@ export const StoreModel = types
       }
     },
     addUser: flow(function* addUser(id: string) {
-      const { data } = yield axios.post(`/api/user/${id}`, getSnapshot(self.user));
+      const dataSave = getSnapshot(self.user);
+      console.log(dataSave);
+      yield axios.post(`/api/user/${id}`, dataSave);
     }),
     getUsers: flow(function* getUsers() {
       const { data } = yield axios.get('/api/users');

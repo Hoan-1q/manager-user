@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { StoreContext } from 'stores';
 
 const EditUser: React.FC = () => {
-  const { user, getUserByID, addUser } = React.useContext(StoreContext);
+  const { user, getUserByID, addUser, resetStore } = React.useContext(StoreContext);
   const [isLoading, setIsLoading] = React.useState(false)
   const {
     displayName, setName,
@@ -31,7 +31,7 @@ const EditUser: React.FC = () => {
         }
       })();
     }
-    // return () => resetStoreUpsell();
+    return () => resetStore();
   }, [isReadyRouter]);
 
   const handleSaveUpsell = async () => {

@@ -1,11 +1,11 @@
 import next from 'next';
 import Koa from 'koa';
 import Router from 'koa-router';
-import bodyParser from 'koa-bodyparser';
-import formidable from 'koa2-formidable';
+// import bodyParser from 'koa-bodyparser';
+// import formidable from 'koa2-formidable';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { RouterUser } from './Routes/user';
+import { RouterUser } from './routes/user';
 
 
 dotenv.config();
@@ -26,37 +26,36 @@ const nextApp = next({ dev });
 const handler = nextApp.getRequestHandler();
 
 /** middleware */
-server.use(formidable());
-server.use(bodyParser());
+// server.use(formidable());
+// server.use(bodyParser());
 
-nextApp.prepare();
+nextApp.prepare().then(() => {
+  server.use(RouterUser.routes());
+  router.get('*', async (ctx) => {
+    await handler(ctx.req, ctx.res);
+    ctx.respond = false;
+    ctx.res.statusCode = 200;
+  });
+  server.use(router.routes());
+  
+  
+  
+  mongoose
+    .connect(
+      MONGO_CONNECTSTRING,
+      {
+        user: MONGO_USER,
+        pass: MONGO_PASSWORD,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true,
+      },
+    );
+  
+  server.listen(port, () => {
+    console.log(`> Ready on http://localhost:${port}`);
+  });
 
-
-router.get('*', async (ctx) => {
-  await handler(ctx.req, ctx.res);
-  ctx.respond = false;
-  ctx.res.statusCode = 200;
-});
-
-server.use(RouterUser.routes());
-server.use(router.routes());
-
-
-
-mongoose
-  .connect(
-    MONGO_CONNECTSTRING,
-    {
-      user: MONGO_USER,
-      pass: MONGO_PASSWORD,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true,
-    },
-  );
-
-server.listen(port, () => {
-  console.log(`> Ready on http://localhost:${port}`);
 });
 

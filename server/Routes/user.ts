@@ -9,27 +9,28 @@ const RouterUser = new Router({ prefix: '/api' });
 dotenv.config();
 
 RouterUser.get('/users', async (ctx: Context) => {
-  console.log(ctx);
   const usersDB = await UserModel.find().lean();
   ctx.status = 200;
   ctx.body = usersDB;
 });
 
-RouterUser.get('/user/{id}', async (ctx: Context) => {
-  console.log(ctx);
+RouterUser.get('/user/:id', async (ctx: Context) => {
   const { id } = ctx.params;
-  const userDB = await UserModel.findById(id).lean();
+  const userDB = await UserModel.findById(id);
   ctx.status = 200;
   ctx.body = userDB;
 });
 
-RouterUser.post('/user/{id}', async (ctx: Context) => {
+RouterUser.post('/user/:id', async (ctx: Context) => {
   const { id } = ctx.params;
-  console.log(ctx);
-  const user: IUser = ctx.request.body as any;
+  // const { body } = ctx.request;
+  console.log(ctx.request);
+  const user = ctx.request.body as IUser;
+  console.log(user);
   const userSave = new UserModel(user);
   switch (id) {
     case 'new': {
+      // console.log(ctx.request);
       const dataSaved = userSave.save();
       if (!dataSaved) throw Error('add user fail');
       break;
@@ -40,6 +41,13 @@ RouterUser.post('/user/{id}', async (ctx: Context) => {
       break;
     }
   }
+});
+
+RouterUser.delete('/user/:id', async (ctx: Context) => {
+  const { id } = ctx.params;
+  const userDB = await UserModel.findByIdAndDelete(id);
+  ctx.status = 200;
+  ctx.body = userDB;
 });
 
 export { RouterUser };
